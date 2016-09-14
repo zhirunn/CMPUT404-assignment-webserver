@@ -32,46 +32,38 @@ class MyWebServer(SocketServer.BaseRequestHandler):
     def handle(self):
         self.data = self.request.recv(1024).strip()
         #nitty gritty parsing & variable initialization
-        getcheck = self.data.split()[0]
         getfile = self.data.split()[1]
         filename = inspect.stack()[0][1]
         directory = os.path.dirname(os.path.abspath(filename)) + "/www"
         filepath = directory + getfile
         status = "status"
 
-        #checks for HTTP method GET
-        if(getcheck == "GET"):
-            #checks if the path is a file
-            if os.path.isfile(filepath):
-                #checks for .html extension
-                if(getfile.split('.')[1]).lower() == "html":
-                    mtype = "text/html"
-                    status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(filepath).read()
-                   
-                #checks for .css extension
-                elif(getfile.split('.')[1]).lower() == "css":
-                    mtype = "text/css"
-                    status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(filepath).read()
+        #checks if the path is a file
+        if os.path.isfile(filepath):
+            #checks for .html extension
+            if(getfile.split('.')[1]).lower() == "html":
+                mtype = "text/html"
+                status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(filepath).read()
+               
+            #checks for .css extension
+            elif(getfile.split('.')[1]).lower() == "css":
+                mtype = "text/css"
+                status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(filepath).read()
 
-                #deals with security in regards to nonexistent paths
-                else:
-                    mtype = "text/plain"
-                    status = "HTTP/1.1 404 Not Found\n" + "Content-Type: " + mtype + "\n"
-
-            #checks if the path is a directory and opens "index.html" if it exists
-            elif os.path.isdir(filepath) and os.path.isfile(filepath + "/index.html"):
-                mtype = "text/html"                
-                status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(directory + "/index.html").read()
-
-            #catches things that don't exist
+            #deals with security in regards to nonexistent paths
             else:
                 mtype = "text/plain"
                 status = "HTTP/1.1 404 Not Found\n" + "Content-Type: " + mtype + "\n"
 
-        #catches other HTTP methods other than GET
+        #checks if the path is a directory and opens "index.html" if it exists
+        elif os.path.isdir(filepath) and os.path.isfile(filepath + "/index.html"):
+            mtype = "text/html"                
+            status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(directory + "/index.html").read()
+
+        #catches things that don't exist
         else:
             mtype = "text/plain"
-            status = "HTTP/1.1 500 Internal Server Error\n" + "Content-Type: " + mtype + "\n"
+            status = "HTTP/1.1 404 Not Found\n" + "Content-Type: " + mtype + "\n"
 
         #print ("Got a request of: %s\n" % self.data)
         self.request.sendall(status)
