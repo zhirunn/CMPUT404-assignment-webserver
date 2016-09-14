@@ -43,27 +43,27 @@ class MyWebServer(SocketServer.BaseRequestHandler):
             #checks for .html extension
             if(getfile.split('.')[1]).lower() == "html":
                 mtype = "text/html"
-                status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(filepath).read()
+                status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n\n" + open(filepath).read()
                
             #checks for .css extension
             elif(getfile.split('.')[1]).lower() == "css":
                 mtype = "text/css"
-                status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(filepath).read()
+                status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n\n" + open(filepath).read()
 
             #deals with security in regards to nonexistent paths
             else:
                 mtype = "text/plain"
-                status = "HTTP/1.1 404 Not Found\n" + "Content-Type: " + mtype + "\n"
+                status = "HTTP/1.1 404 Not Found\n" + "Content-Type: " + mtype + "\n\n"
 
         #checks if the path is a directory and opens "index.html" if it exists
         elif os.path.isdir(filepath) and os.path.isfile(filepath + "/index.html"):
             mtype = "text/html"                
-            status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n" + open(directory + "/index.html").read()
+            status = "HTTP/1.1 200 OK\n" + "Content-Type: " + mtype + "\n\n" + open(directory + "/index.html").read()
 
         #catches things that don't exist
         else:
             mtype = "text/plain"
-            status = "HTTP/1.1 404 Not Found\n" + "Content-Type: " + mtype + "\n"
+            status = "HTTP/1.1 404 Not Found\n" + "Content-Type: " + mtype + "\n\n"
 
         #print ("Got a request of: %s\n" % self.data)
         self.request.sendall(status)
