@@ -56,7 +56,7 @@ class MyWebServer(SocketServer.BaseRequestHandler):
                 status = "HTTP/1.1 404 Not Found\r\n" + "Content-Type: " + mtype + "\r\n\r\n"
 
         #checks if the path is a directory and opens "index.html" if it exists
-        elif os.path.isdir(filepath) and os.path.isfile(filepath + "/index.html"):
+        elif os.path.isdir(filepath) and os.path.isfile(filepath + "index.html"):
             mtype = "text/html"                
             status = "HTTP/1.1 200 OK\r\n" + "Content-Type: " + mtype + "\r\n\r\n" + open(filepath + "index.html").read()     
 
